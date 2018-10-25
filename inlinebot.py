@@ -97,14 +97,7 @@ def any_msg(message):
 def start_dlg(message):
     # init()
 
-    #customer = []
-    #customer.append ("Заказ из бота в Telegram - WalkModaBot:\n| Пользователь: %s\n| Имя: %s\n| Фамилия: %s\n"
-        #% (message.chat.username, message.chat.first_name, message.chat.last_name))
-
-    #customer_string.append("| Пользователь: %s\n" % message.chat.username)
-    #customer_string.append("| Имя: %s\n" % message.chat.first_name)
-    #customer_string.append("| Фамилия: %s\n" % message.chat.last_name)
-
+    # записываем все данные о вошедшем пользователе
     user.username = message.chat.username
     user.first_name = message.chat.first_name
     user.last_name = message.chat.last_name
@@ -116,20 +109,21 @@ def start_dlg(message):
 
     keyboard = types.InlineKeyboardMarkup(row_width=1)
 
+    # начальное меню из 4 кнопок
     url_button = types.InlineKeyboardButton(text="Посетите наш instagram", url="https://www.instagram.com/walk.moda/")
     callback_button = types.InlineKeyboardButton(text="Заказ комбинезона", callback_data="order")
     callback_button2 = types.InlineKeyboardButton(text="Отзывы наших клиентов", callback_data="feedback")
     callback_button3 = types.InlineKeyboardButton(text="Новинки сезона", callback_data="new_sales")
 
-# размещаем кнопки
+    # размещаем кнопки
     keyboard.add(url_button, callback_button, callback_button2, callback_button3)
 
-# логотип и первая фраза диалога о выборе категории заказываемых блюд
-# bot.send_photo(message.chat.id, photo=open('img/field/img_b2.jpg', 'rb'))
-
+# логотип и первая фраза диалога о выборе категории
     bot.send_photo(message.chat.id, photo=open('res/logo2.png', 'rb'))
     msg_dialog = bot.send_message(message.chat.id, strings.msg_hello, reply_markup=keyboard)
 
+
+###########################################################################################
 # главный обработчик всех нажатий пользователя на кнопки диалога, для формирования заказа
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
@@ -326,12 +320,12 @@ def callback_inline(call):
             final_order_string = ("| %s\n| %s\n| %s\n| %s\n| %s") % (customer.comb, customer.VIP, customer.rost, customer.razmer, customer.quantity) 
             sendMail(final_order_string)
 
-#############################
+
+######################################################
 # обработчики переходов по категориям
-#############################
 
 ##########################################
-# первая категория товаров
+# первая категория товаров:
 def category1(message):
 
     # пишем все поля по пользователю в объект класса User
@@ -340,6 +334,7 @@ def category1(message):
     user.last_name = message.chat.last_name
     
     print ("User:\n%s, %s, %s" % (user.username, user.first_name, user.last_name))
+
     # отсылаем логотип компании
     bot.send_photo(message.chat.id, photo=open('res/walkmoda_P.jpg', 'rb'))
 
@@ -354,7 +349,6 @@ def category1(message):
     callback_button7 = types.InlineKeyboardButton(text=strings.msg_category1_7, callback_data=strings.msg_category1_7)
     callback_button8 = types.InlineKeyboardButton(text=strings.msg_category1_8, callback_data=strings.msg_category1_8)
     # callback_button9 = types.InlineKeyboardButton(text=strings.msg_category1_9, callback_data=strings.msg_category1_9)
-
     # кнопка назад в главное меню
     callback_button_back = types.InlineKeyboardButton(text=strings.msg_button_back, callback_data="back_to_main_menu")
 
@@ -365,7 +359,7 @@ def category1(message):
     msg_dialog = bot.send_message(message.chat.id, strings.msg_category1_bot, reply_markup=keyboard)
 
 
-##########################################
+#####################################################
 # вторая категория(кнопка "отзывы наших клиентов"")
 def category2(message):
     bot.send_photo(message.chat.id, photo=open('res/otzuv1.png', 'rb'))
@@ -379,7 +373,7 @@ def category2(message):
     msg_dialog = bot.send_message(message.chat.id, strings.msg_category2_1, reply_markup=keyboard)
 
 
-##########################################
+#####################################################
 # 3-ая категория(кнопка "новинки сезона"")
 def category3(message):
     bot.send_photo(message.chat.id, photo=open('res/otzuv2.png', 'rb'))
@@ -393,7 +387,7 @@ def category3(message):
     msg_dialog = bot.send_message(message.chat.id, strings.msg_category3_1, reply_markup=keyboard)
 
 
-##########################################
+#####################################################
 # для обработки выбора VIP или простой наполнитель
 def VIP(message):
     bot.send_message(message.chat.id, strings.msg_VIP_info)
@@ -408,7 +402,7 @@ def VIP(message):
     msg_dialog = bot.send_message(message.chat.id, strings.msg_VIP_info2, reply_markup=keyboard)
 
 
-##########################################
+#####################################################
 # кнопки и меню по выбору роста
 def rost(message):
     keyboard = types.InlineKeyboardMarkup(row_width=3)
@@ -427,7 +421,7 @@ def rost(message):
     bot.send_message(message.chat.id, strings.msg_rost_info, reply_markup=keyboard)
 
 
-##########################################
+##########################################################################################################
 # кнопки и меню по выбору роста
 def razmer(message):
     keyboard = types.InlineKeyboardMarkup(row_width=3)
@@ -446,7 +440,7 @@ def razmer(message):
     bot.send_message(message.chat.id, strings.msg_razmer_info, reply_markup=keyboard)
     
 
-##########################################
+##########################################################################################################
 # кнопки и меню по выбору количества товара
 def quantity(message):
     keyboard = types.InlineKeyboardMarkup(row_width=3)
@@ -464,7 +458,7 @@ def quantity(message):
     bot.send_message(message.chat.id, strings.msg_quantity, reply_markup=keyboard)
 
 
-##########################################
+##########################################################################################################
 # выводим пользователю финальный заказ с учетом всех выбранных характеристик
 def complete(message):
     bot.send_message(message.chat.id, strings.msg_complete)
@@ -474,7 +468,7 @@ def complete(message):
     is_order_right(message)
 
 
-##########################################
+##########################################################################################################
 # запрашиваем пользователя - заказ верный? либо вернуться назад в меню выбора комбинезона
 def is_order_right(message):
     # размещаем клавиатуру с кнопками Верно и Назад
@@ -487,7 +481,7 @@ def is_order_right(message):
     bot.send_message(message.chat.id, strings.msg_is_right_order, reply_markup=keyboard)
 
 
-##########################################
+###########################################################################################################
 # всё в заказе теперь верно и можно запросить у пользователя контакт с номером телефона
 def request_contact(message):
 
@@ -499,7 +493,7 @@ def request_contact(message):
     bot.register_next_step_handler(msg_dialog, final_order)
 
 
-##########################################
+###############################################################################################
 # заказ полностью подтвержден и получено согласие пользователя, а также контакт телефон юзера
 def final_order(message):
     user.phone_number = message.contact.phone_number
@@ -521,7 +515,7 @@ def final_order(message):
     sendMail(mail_order, message)
 
 
-##########################################
+###############################################################################################
 # функция пересылки письма с заказом на почтовый ящик менеджора
 def sendMail(message_to_send, message):
     smtp_host = settings.SMTPAgent # gmail smtp server SMTPAgent = "smtp.gmail.com" или yandex.ru - smtp.yandex.ru
@@ -553,7 +547,7 @@ def sendMail(message_to_send, message):
     start_dlg(message)
 
 
-##########################################
+###############################################################################################
 # самое основное тут - точка входа)
 if __name__ == '__main__':
 # создаем объекты customer и user - экземпляры классов Customer и User, который содержит поля заказа и обнуляем на старте
